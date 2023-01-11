@@ -19,6 +19,10 @@
     "files": [
         "lib"
     ],
+    "exports": {
+        "require": "./lib/index.cjs.js",
+        "import": "./lib/index.esm.js"
+    },
     "scripts": {
         "build": "cross-env NODE_ENV=production rollup --config --bundleConfigAsCjs && tsc --emitDeclarationOnly",
         "cm": "cz",
