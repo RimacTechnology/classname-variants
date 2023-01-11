@@ -23,7 +23,7 @@ import { variants } from './variants'
 export type VariantPropsOf<Type> = Type extends (props: infer Props) => any ? Props : never
 
 /**
- * Type for the variantProps() argument – consists of the VariantOptions and an optional className for chaining.
+ * Type for the variantProps() argument â€“ consists of the VariantOptions and an optional className for chaining.
  */
 type VariantProps<
     Config extends VariantsConfig<Variant>,
@@ -55,8 +55,6 @@ export function variantProps<
     }
 }
 
-type VariantsOf<Type, Variant> = Type extends VariantsConfig ? Variant : {}
-
 type AsProps<Type extends ElementType = ElementType> = {
     as?: Type
 }
@@ -67,34 +65,20 @@ type PolymorphicComponentProps<Type extends ElementType> = AsProps<Type> &
 export function styled<
     Type extends ElementType,
     Config extends VariantsConfig<Variant>,
-    Variant extends Variants = VariantsOf<Config, Config['variants']>
+    Variant extends Variants = Config['variants']
 >(type: Type, config: Simplify<Config> | string) {
     const styledProps =
         typeof config === 'string'
-            ? variantProps({
-                base: config,
-                variants: {},
-            })
+            ? variantProps({ base: config, variants: {} })
             : variantProps(config)
 
     const Component: <As extends ElementType = Type>(
-        props: PolymorphicComponentProps<As> & VariantOptions<Config>,
+        props: PolymorphicComponentProps<As> & VariantOptions<Config>
     ) => ReactElement | null = forwardRef(
-        ({
-            as,
-            ...props
-        }: AsProps, ref: Ref<Element>) => {
-            return createElement(as ?? type, {
-                ...styledProps(props),
-                ref,
-            })
-        },
+        ({ as, ...props }: AsProps, ref: Ref<Element>) => {
+            return createElement(as ?? type, { ...styledProps(props), ref })
+        }
     )
 
     return Component
 }
-
-/**
- * No-op function to mark template literals as tailwind strings.
- */
-export const tw = String.raw
